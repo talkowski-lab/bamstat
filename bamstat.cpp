@@ -438,6 +438,16 @@ int main(int argc, char* argv[]) {
             read2 = temp;
         }
 
+	// Skip pairs where both reads have mapq = 0
+	if ((read1->core.qual == 0) && (read2->core.qual == 0)){
+	    continue;
+	}
+
+	// Skip pairs where either read is a duplicate
+	if ((read1->core.flag & BAM_FDUP) || (read2->core.flag & BAM_FDUP)){
+	    continue;
+	}
+
         // Call variant type and update AlignmentStats accordingly
         type = call_variant(read1, read2, max_insert);
         orientation = get_orientation(read1, read2);
