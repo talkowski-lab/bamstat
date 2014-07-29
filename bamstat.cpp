@@ -367,9 +367,10 @@ int main(int argc, char* argv[]) {
 
     /* Require both an input file and an output directory */
     if (bam_filename == NULL) {
-        std::cerr << "bamstat: No input file specified." << std::endl;
-        std::cerr << "bamstat: Use --help for more information." << std::endl;
-        exit(-1);
+	bam_filename = "-";
+        // std::cerr << "bamstat: No input file specified." << std::endl;
+        // std::cerr << "bamstat: Use --help for more information." << std::endl;
+        // exit(-1);
     }
 
     // if (output_directory == NULL) {
