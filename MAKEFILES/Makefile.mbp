@@ -1,0 +1,20 @@
+CFLAGS = -I /usr/local/src/samtools-0.1.18 -L /usr/local/src/samtools-0.1.18 -lbam -L /usr/local/src/zlib-1.2.7 -lz
+
+bamstat: bamstat.cpp alignment_stats.o running_mean.o running_median.o read_pair.o
+	g++ -g -o bamstat bamstat.cpp alignment_stats.o running_mean.o running_median.o read_pair.o $(CFLAGS)
+
+alignment_stats.o: alignment_stats.cpp
+	g++ -g -c alignment_stats.cpp -I /usr/local/src/samtools-0.1.18
+
+running_mean.o: running_mean.cpp
+	g++ -g -c running_mean.cpp
+
+running_median.o: running_median.cpp
+	g++ -g -c running_median.cpp
+
+read_pair.o: read_pair.cpp
+	g++ -g -c read_pair.cpp -I /usr/local/src/samtools-0.1.18
+
+clean:
+	rm *.o
+	rm bamstat

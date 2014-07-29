@@ -1,0 +1,38 @@
+#ifndef _BAMSTAT_H_
+#define _BAMSTAT_H_
+
+#include <cstdlib>
+#include <cstdarg>
+#include <iostream>
+#include <string>
+#include <getopt.h>
+#include <boost/filesystem.h>
+
+#include "sam.h"
+#include "alignment_stats.hpp"
+#include "running_mean.hpp"
+#include "running_median.hpp"
+
+#define MAX_INSERT 5000
+// #include "read_pair.hpp"
+
+enum VariantType { DELETION, INSERTION, INVERSION, TRANSLOCATION, NORMAL,
+    SHORT, ONE_UNMAPPED, BOTH_UNMAPPED };
+
+int usage();
+void sample_statistics(samfile_t* samfile, int* FR_interval, int* RF_interval,
+    int threshold, int max_insert);
+
+VariantType call_variant(bam1_t* read1, bam1_t* read2, AlignmentStats* stats,
+    int max_insert);
+
+bool is_proper_sample(bam1_t* read1, bam1_t* read2, int max_insert);
+bool is_proper_RF(bam1_t* read1, bam1_t* read2, int max_insert);
+
+// Functions to determine orientation of a pair
+bool pair_is_FR(bam1_t* read1, bam1_t* read2);
+bool pair_is_RF(bam1_t* read1, bam1_t* read2);
+bool pair_is_RR(bam1_t* read1, bam1_t* read2);
+bool pair_is_FF(bam1_t* read1, bam1_t* read2);
+
+#endif /* _BAMSTAT_H_ */
