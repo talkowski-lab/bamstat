@@ -20,15 +20,15 @@ int usage() {
 
     std::cout << "Optional arguments, with defaults in [ ]:" << std::endl;
     std::cout << "    -h --help\t\t\t\tShow this message" << std::endl;
-    std::cout << "    --insert-deviations=<threshold>\t"
+    std::cout << "    -d --insert-deviations=<threshold>\t"
         "Define normal insert size to be within\n"
         "\t\t\t\t\t<threshold> absolute deviations of the median [5]" << std::endl;
-    std::cout << "    --max-insert=<insert-size>\t\t"
+    std::cout << "    -m --max-insert=<insert-size>\t"
         "Define maximum insert size for calculation\n"
         "\t\t\t\t\tof sample mean to be <insert-size> [5000]" << std::endl;
-    std::cout << "    --bam-input\t\t\t\tRead from .bam format instead "
+    std::cout << "    -b --bam-input\t\t\tRead from .bam format instead "
         "of .sam" << std::endl;
-    std::cout << "    --save-unmapped\t\t\tOutput unmapped read pairs\n"
+    std::cout << "    -u --save-unmapped\t\t\tOutput unmapped read pairs\n"
         << std::endl;
 
     return 0;
@@ -437,6 +437,16 @@ int main(int argc, char* argv[]) {
             read1 = read2;
             read2 = temp;
         }
+
+	// Skip pairs where both reads have mapq = 0
+	if ((read1->core.qual == 0) && (read2->core.qual == 0)){
+	    continue;
+	}
+
+	// Skip pairs where either read is a duplicate
+	if ((read1->core.flag & BAM_FDUP) || (read2->core.flag & BAM_FDUP)){
+	    continue;
+	}
 
         // Call variant type and update AlignmentStats accordingly
         type = call_variant(read1, read2, max_insert);
